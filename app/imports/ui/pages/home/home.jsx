@@ -123,7 +123,12 @@ class HomeComponent extends Component {
 const Home = withTracker(() => {
   const handle = Meteor.subscribe('users');
 
-  const users = handle.ready() && Meteor.users.find({ _id: { $ne: Meteor.userId() } }).fetch();
+  const users = handle.ready() && Meteor.users.find({
+    _id: {
+      $ne: Meteor.userId()
+    },
+    'status.online': true,
+  }).fetch();
   const loading = !handle.ready();
 
   return {
