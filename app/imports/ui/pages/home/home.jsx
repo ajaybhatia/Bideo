@@ -4,7 +4,8 @@ import { VideoCallServices } from 'meteor/elmarti:video-chat';
 
 class HomeComponent extends Component {
   state = {
-    status: ''
+    status: '',
+    callState: '',
   }
 
   constructor(props) {
@@ -18,6 +19,10 @@ class HomeComponent extends Component {
         { urls: 'stun:stun4.l.google.com:19302' }
       ]
     });
+  }
+
+  getCallState = key => {
+    return VideoCallServices.getState(key);
   }
 
   componentDidMount() {
