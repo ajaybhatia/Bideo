@@ -7,29 +7,31 @@ class RegisterComponent extends Component {
     const { router } = this.props;
 
     return (
-      <form onSubmit={e => {
-        e.preventDefault();
-        Accounts.createUser({
-          username: e.target.username.value,
-          password: e.target.password.value
-        }, error => {
-          if (error) console.log(error.reason);
-          else router.push('/');
-        });
-      }}>
-        <div>
-          <div>
-            <label>Username</label>
-            <input type="text" name="username" />
-          </div>
-          <div>
-            <label>Password</label>
-            <input type="password" name="password" />
-          </div>
-          <button>Register</button>
-          <Link to="/login">Already Regsitered?</Link>
+      <div style={{ marginTop: '25%' }}>
+        <div className="col-sm-4 col-md-4 col-lg-4 mx-auto">
+          <form onSubmit={e => {
+            e.preventDefault();
+            Accounts.createUser({
+              username: e.target.username.value,
+              password: e.target.password.value
+            }, error => {
+              if (error) console.log(error.reason);
+              else router.push('/');
+            });
+          }}>
+            <div className="form-group">
+              <label>Username</label>
+              <input type="text" name="username" className="form-control" />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input type="password" name="password" className="form-control" />
+            </div>
+            <button type="submit" className="btn btn-primary">Register</button>
+            <Link to="/login" className="float-right">Already Regsitered?</Link>
+          </form>
         </div>
-      </form>
+      </div>
     );
   }
 }
