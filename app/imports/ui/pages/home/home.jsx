@@ -19,9 +19,7 @@ class HomeComponent extends Component {
         { urls: 'stun:stun4.l.google.com:19302' }
       ]
     });
-  }
 
-  componentDidMount() {
     VideoCallServices.onReceiveCall = _id => {
       const user = Meteor.users.findOne(_id);
       this.setState({
