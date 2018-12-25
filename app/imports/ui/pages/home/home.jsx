@@ -62,74 +62,87 @@ class HomeComponent extends Component {
     const { status, statusText } = this.state;
 
     return (
-      <div>
-        <div>
-          <ul>
+      <div className="container">
+        <div className="mt-5">
+          <h3>Available Users</h3>
+          <div className="list-group">
             {!loading && users.map(user =>
-              <li key={user._id}>
-                <span
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    VideoCallServices.call({
-                      id: user._id,
-                      localElement: document.querySelector('#localVideo'),
-                      remoteElement: document.querySelector('#remoteVideo'),
-                      video: true,
-                      audio: true
-                    });
+              <a
+                href="#"
+                key={user._id}
+                className="list-group-item list-group-item-action"
+                onClick={() => {
+                  VideoCallServices.call({
+                    id: user._id,
+                    localElement: document.querySelector('#localVideo'),
+                    remoteElement: document.querySelector('#remoteVideo'),
+                    video: true,
+                    audio: true
+                  });
 
-                    this.setState({ statusText: `Calling ${user.username}` });
-                  }}>
-                  {user.username}
-                </span>
-              </li>
+                  this.setState({ statusText: `Calling ${user.username}` });
+                }}>
+                {user.username}
+              </a>
             )}
-          </ul>
+          </div>
         </div>
 
-        <div>
-          {statusText}
-        </div>
+        {statusText &&
+          <div className="row">
+            <div className="col-md-6 col-lg-6">
+              <div className="alert alert-success mt-5" role="alert">
+                {statusText}
+              </div>
+            </div>
+          </div>
+        }
 
         {status === 'ringing' &&
-          <div>
-            <button onClick={() => {
-              VideoCallServices.answerCall({
-                localElement: document.querySelector("#localVideo"),
-                remoteElement: document.querySelector("#remoteVideo"),
-                video: true,
-                audio: true
-              });
+          <div className="row">
+            <div className="col-md-6 col-lg-6">
+              <button className="btn btn-success" onClick={() => {
+                VideoCallServices.answerCall({
+                  localElement: document.querySelector("#localVideo"),
+                  remoteElement: document.querySelector("#remoteVideo"),
+                  video: true,
+                  audio: true
+                });
 
-              this.setState({ statusText: 'Connected' });
-            }}>Answer</button>
-            <button onClick={() => {
-              VideoCallServices.rejectCall();
-              this.setState({ statusText: 'Call Rejected' });
-            }}>Reject</button>
+                this.setState({ statusText: 'Connected' });
+              }}>Answer</button>
+              <button className="btn btn-danger float-right" onClick={() => {
+                VideoCallServices.rejectCall();
+                this.setState({ statusText: 'Call Rejected' });
+              }}>Reject</button>
+            </div>
           </div>
         }
 
         {status === 'inProgress' &&
           <div>
-            <button onClick={() => {
+            <button className="btn btn-primary" onClick={() => {
               VideoCallServices.endCall();
               this.setState({ statusText: 'Call ended' });
             }}>End Call</button>
           </div>
         }
 
-        <div>
-          <video id="localVideo"></video>
-          <div>
-            Local
+        <div className="row mt-5">
+          <div className="col-12">
+            <h5 className="text-center">Local</h5>
+            <div style={{ display: 'flex', justifyContent: 'center', }}>
+              <video id="localVideo"></video>
+            </div>
           </div>
         </div>
 
-        <div>
-          <video id="remoteVideo"></video>
-          <div>
-            Remote
+        <div className="row mt-2">
+          <div className="col-12">
+            <h5 className="text-center">Remote</h5>
+            <div style={{ display: 'flex', justifyContent: 'center', }}>
+              <video id="remoteVideo"></video>
+            </div>
           </div>
         </div>
       </div>
