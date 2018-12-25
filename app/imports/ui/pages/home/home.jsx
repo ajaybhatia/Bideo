@@ -5,6 +5,7 @@ import { VideoCallServices } from 'meteor/elmarti:video-chat';
 class HomeComponent extends Component {
   state = {
     status: '',
+    statusText: '',
   }
 
   constructor(props) {
@@ -21,32 +22,46 @@ class HomeComponent extends Component {
   }
 
   componentDidMount() {
-    VideoCallServices.onRecieveCall = userId => {
-      const user = Meteor.users.findOne(userId);
-      this.setState({ status: `Recieving call from ${user.username}` });
+    VideoCallServices.onReceiveCall = _id => {
+      const user = Meteor.users.findOne(_id);
+      this.setState({
+        status: 'ringing',
+        statusText: `Recieving call from ${user.username}`,
+      });
     }
 
     VideoCallServices.onTargetAccept = () => {
-      this.setState({ status: 'Target Accepted' });
+      this.setState({
+        status: 'inProgress',
+        statusText: 'Target Accepted',
+      });
     }
 
     VideoCallServices.onTerminateCall = () => {
-      this.setState({ status: 'Call terminated' });
+      this.setState({
+        status: '',
+        statusText: 'Call terminated',
+      });
     };
 
     VideoCallServices.onCallRejected = () => {
-      this.setState({ status: 'Call rejected' });
+      this.setState({
+        status: '',
+        statusText: 'Call rejected'
+      });
     };
 
     VideoCallServices.setOnError(err => {
-      console.error(err);
-      this.setState({ status: err });
+      this.setState({
+        status: '',
+        statusText: err,
+      });
     });
   }
 
   render() {
     const { loading, users } = this.props;
-    const { status } = this.state;
+    const { status, statusText } = this.state;
 
     return (
       <div>
@@ -65,7 +80,7 @@ class HomeComponent extends Component {
                       audio: true
                     });
 
-                    this.setState({ status: `Calling ${user.username}` });
+                    this.setState({ statusText: `Calling ${user.username}` });
                   }}>
                   {user.username}
                 </span>
@@ -75,32 +90,36 @@ class HomeComponent extends Component {
         </div>
 
         <div>
-          {status}
+          {statusText}
         </div>
 
-        <div>
-          <button onClick={() => {
-            VideoCallServices.answerCall({
-              localElement: document.querySelector("#localVideo"),
-              remoteElement: document.querySelector("#remoteVideo"),
-              video: true,
-              audio: true
-            });
+        {status === 'ringing' &&
+          <div>
+            <button onClick={() => {
+              VideoCallServices.answerCall({
+                localElement: document.querySelector("#localVideo"),
+                remoteElement: document.querySelector("#remoteVideo"),
+                video: true,
+                audio: true
+              });
 
-            this.setState({ status: 'Connected' });
-          }}>Answer</button>
-          <button onClick={() => {
-            VideoCallServices.rejectCall();
-            this.setState({ status: 'Call Rejected' });
-          }}>Reject</button>
-        </div>
+              this.setState({ statusText: 'Connected' });
+            }}>Answer</button>
+            <button onClick={() => {
+              VideoCallServices.rejectCall();
+              this.setState({ statusText: 'Call Rejected' });
+            }}>Reject</button>
+          </div>
+        }
 
-        <div>
-          <button onClick={() => {
-            VideoCallServices.endCall();
-            this.setState({ status: 'Call ended' });
-          }}>End Call</button>
-        </div>
+        {status === 'inProgress' &&
+          <div>
+            <button onClick={() => {
+              VideoCallServices.endCall();
+              this.setState({ statusText: 'Call ended' });
+            }}>End Call</button>
+          </div>
+        }
 
         <div>
           <video id="localVideo"></video>
