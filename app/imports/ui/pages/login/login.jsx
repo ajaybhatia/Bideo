@@ -8,6 +8,7 @@ class LoginComponent extends Component {
 
     return (
       <div style={{ marginTop: '25%' }}>
+        <h2 className="text-center">Bideo <small>A Video Calling App</small></h2>
         <div className="col-sm-4 col-md-4 col-lg-4 mx-auto">
           <form onSubmit={e => {
             e.preventDefault();
